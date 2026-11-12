@@ -42,7 +42,7 @@ function reset(){setTS();RV=fieldFor(CAL[rc]);P={x:0,l:1,v:20,en:100,y:LY[1],fin
  hz=[];for(let i=0;i<8;i++)hz.push({x:220+i*160+Math.random()*60,l:Math.floor(Math.random()*3),k:i%3,h:0});
  V=[{x:34,l:0,v:21,b:21.5,w:4},{x:60,l:2,v:21,b:21,w:8,car:1},{x:150,l:1,v:21,b:21.8,w:4}];V.forEach(v=>{v.y=LY[v.l];v.tm=3+Math.random()*4});if(clm)V=[];bd=[{x:520,l:0,g:0},{x:1120,l:0,g:0}];fT=0;msg='';}
 function go(){save('go');reset();st='count';cd=3;jingle();crowd(1);engine(1)}
-function start(){if(st=='title'){fs();titleGo(arguments[0])}else if(!arguments.length){if(st=='sel')go();else if(st=='end')(tbl()?cont():nxt());else if(st=='prof')profOk();else if(st=='sea'||st=='cel')toRec();else if(st=='rec')newSeason();else if(st=='fin')restart()}}
+function start(){if(st=='title'){fs();titleGo(arguments[0])}else if(!arguments.length){if(st=='sel')toTuto();else if(st=='end')(tbl()?cont():nxt());else if(st=='prof')profOk();else if(st=='tuto')tnext();else if(st=='sea'||st=='cel')toRec();else if(st=='rec')newSeason();else if(st=='fin')restart()}}
 function lane(d){if(st=='race'||st=='count')P.l=Math.max(0,Math.min(2,P.l+d))}
 addEventListener('keydown',e=>{if(e.target&&e.target.tagName=='INPUT'){if(e.code=='Enter')start();return}K[e.code]=1;if(e.code=='ArrowUp'||e.code=='KeyW')lane(-1);if(e.code=='ArrowDown'||e.code=='KeyS')lane(1);if(e.code=='Enter'||e.code=='Space')start();if(e.code.startsWith('Arrow')||e.code=='Space')e.preventDefault()});
 addEventListener('keyup',e=>K[e.code]=0);
@@ -157,7 +157,7 @@ function draw(){if(st=='count')RT=0;if(st=='race'&&!P.fin)RT+=t-lt;{const tg=(st
  if(st=='race'||st=='count')T(Math.max(0,Math.round(LEN-P.x))+' m',W-8,10,'#fff','right');else T(DV[dv],W-8,10,'#ffd23e','right');
  TS.forEach(s=>{g.fillStyle=['#7fb0ff','#ff8a3e','#e04040','#9bff4d'][s[2]];g.fillRect(150+s[0]/LEN*158,26,(s[1]-s[0])/LEN*158,2)});T(['PLAT','MONTÉE','BOSSE RAIDE','DESCENTE'][terr(P.x)],W-8,20,'#fff','right');R.forEach(r=>{g.fillStyle=r.c;g.fillRect(150+Math.min(1,r.x/LEN)*158,24,2,5)});g.fillStyle='#6fe8d8';g.fillRect(149+Math.min(1,P.x/LEN)*158,22,4,9);
  if(P.dr&&st=='race')T('ASPIRATION −30 %',96,P.y-32,'#fff','center');
- if(st=='sel')dsel();if(st=='sea')dsea();if(st=='rec')drec();if(st=='prof')dprof();if(st=='cel')dcel();if(st=='fin')dfin();dgap();dnm();if(st=='race'&&RT<3&&gcj(-1))T('Bonus de leader',96,P.y-44,'#ffd23e','center');if(mt>0)T(msg,W/2,170,'#ffd23e','center');if(st=='count'){T(CAL[rc][0],W/2,56,'#ffd23e','center');T((CAL[rc][2]?'CHAMPIONNAT':'COURSE '+(rc+1)+'/'+CAL.length)+', '+DV[dv]+(CAL[rc][1]=='S'?', ÉTAPE '+(sg+1)+'/7'+(clm?' CLM':''):clm?', CLM':''),W/2,67,'#cfe4ff','center');T(cd>0?String(Math.ceil(cd)):'',W/2,84,'#fff','center')}
+ if(st=='sel')dsel();if(st=='sea')dsea();if(st=='rec')drec();if(st=='prof')dprof();if(st=='tuto')dtuto();if(st=='cel')dcel();if(st=='fin')dfin();dgap();dnm();if(st=='race'&&RT<3&&gcj(-1))T('Bonus de leader',96,P.y-44,'#ffd23e','center');if(mt>0)T(msg,W/2,170,'#ffd23e','center');if(st=='count'){T(CAL[rc][0],W/2,56,'#ffd23e','center');T((CAL[rc][2]?'CHAMPIONNAT':'COURSE '+(rc+1)+'/'+CAL.length)+', '+DV[dv]+(CAL[rc][1]=='S'?', ÉTAPE '+(sg+1)+'/7'+(clm?' CLM':''):clm?', CLM':''),W/2,67,'#cfe4ff','center');T(cd>0?String(Math.ceil(cd)):'',W/2,84,'#fff','center')}
  if(st=='title'||st=='end'){g.fillStyle='#0b1a4add';g.fillRect(30,40,260,108);g.strokeStyle='#ffd23e';g.strokeRect(30.5,40.5,259,107);
  if(st=='title'){T('TOUR DES ALPES',W/2,62,'#ffd23e','center');T('course cycliste 16 bits',W/2,75,'#fff','center');T('Attaque, prends la roue',W/2,92,'#cfe4ff','center');T('et gère ton énergie.',W/2,103,'#cfe4ff','center');T('Bidons dans la file du haut.',W/2,114,'#cfe4ff','center');T(SV?'Saison '+SV.se+', '+DV[SV.dv]+', '+DFN[SV.DF||0]:'Vise le podium !',W/2,125,'#cfe4ff','center');T(SV?'Entrée ou toucher : continuer':'Entrée ou toucher pour partir',W/2,141,'#ffd23e','center');if(SV){g.fillStyle='#e04040';g.fillRect(100,152,120,14);T('NOUVELLE PARTIE',W/2,163,'#fff','center')}}
  else{T(rk==1?'VICTOIRE !':rk<=3?'PODIUM, '+rk+'e':'ARRIVÉE, '+rk+'e',W/2,62,'#ffd23e','center');T(rk<=3?'Niveau supérieur ! '+(rk==1?'Maillot du vainqueur.':''):'Pas de podium cette fois.',W/2,80,'#fff','center');T('Points : '+pts+'   Temps : '+Math.floor(RT)+' s',W/2,96,'#6fe8d8','center');T('Force '+lv.f+'  Endurance '+lv.e+'  Récup '+lv.r,W/2,110,'#fff','center');T('Entrée ou toucher pour rejouer',W/2,136,'#ffd23e','center')}}if(st=='end')dend()}
@@ -183,7 +183,7 @@ let dg=-1;const px=e=>{const r=C.getBoundingClientRect();return[(e.clientX-r.lef
 C.addEventListener('pointerdown',e=>{if(st!='sel'||e.timeStamp-selT<200)return;const[x,y]=px(e);
  PRE.forEach((p,i)=>{const cx=6+i*78;if(x>=cx&&x<cx+74&&y>=18&&y<100)pick(i)});
  KS.forEach((k,j)=>{const by=120+j*12;if(y>=by-3&&y<by+11&&x>=70&&x<=280){dg=j;sr=j;setS(k[0],(x-80)/1.9)}});
- if(y>=158&&y<176&&x>=90&&x<230)go()});
+ if(y>=158&&y<176&&x>=90&&x<230)toTuto()});
 addEventListener('pointermove',e=>{if(dg<0)return;setS(KS[dg][0],(px(e)[0]-80)/1.9)});addEventListener('pointerup',()=>dg=-1);
 addEventListener('keydown',e=>{if(st!='sel')return;const c=e.code;if(c=='ArrowUp')sr=(sr+2)%3;if(c=='ArrowDown')sr=(sr+1)%3;if(c=='ArrowLeft')pick((sc+3)%4);if(c=='ArrowRight')pick((sc+1)%4);if(c=='Minus'||c=='NumpadSubtract')setS(KS[sr][0],S[KS[sr][0]]-5);if(c=='Equal'||c=='NumpadAdd')setS(KS[sr][0],S[KS[sr][0]]+5)});
 let cn,cg,cf,ci;
@@ -334,6 +334,29 @@ function dprof(){scene();g.fillStyle='#0b1a4af0';g.fillRect(20,14,280,152);g.str
  DFN.forEach((n,i)=>{const x=30+i*90,on=i==DF;g.fillStyle=on?'#ffd23e':'#162a6a';g.fillRect(x,104,80,16);g.strokeStyle=on?'#fff':'#4a5fa8';g.strokeRect(x+.5,104.5,79,15);T(n,x+40,116,on?'#120826':'#fff','center')});
  T(DFD[DF],W/2,136,'#fff','center');g.fillStyle='#e04040';g.fillRect(110,146,100,16);T('SUITE',W/2,158,'#fff','center')}
 C.addEventListener('pointerdown',e=>{if(st!='prof'||e.timeStamp-selT<200)return;const[x,y]=px(e);if(y>=104&&y<120)DFN.forEach((n,i)=>{const bx=30+i*90;if(x>=bx&&x<bx+80)DF=i});if(y>=146&&y<162&&x>=110&&x<210)profOk()});
+let tp=0;
+const TP=[{t:'TON COUREUR',l:['Tu es le cycliste à la flèche jaune.','Tu avances vers l’arrivée, à droite.','HAUT / BAS : change de file (3 files).','ATTAQUE (flèche droite) : accélère.','Rien : tu gardes ta vitesse.','Flèche gauche : freine et récupère.','Sur mobile : boutons en bas d’écran.']},
+{t:'TON ÉNERGIE',l:['En haut à gauche : ta barre d’énergie.','Attaquer la vide, rouler la recharge.','Montée : attaquer coûte plus cher,','selon ta force de Grimpeur.','Bosse raide : idem avec le Puncheur.','Descente : attaquer ne coûte rien.','Sous 10 % d’énergie, chutes plus','probables sur les obstacles.']},
+{t:'LE PELOTON',l:['RANG 2/12 : ta place parmi les 12.','Derrière un coureur ou un véhicule,','à moins de 13 mètres, tu profites de','son ASPIRATION : même vitesse, sans','effort. En attaque : -30 % d’énergie.','Pas d’aspiration en bosse raide,','et en montée elle ne recharge pas.','Motos et voiture : contourne-les !']},
+{t:'SUR LA ROUTE',l:['Bidon jaune (file du haut) : +40 %','d’énergie, passe dessus pour l’avoir.','Flaque, gravillons, sable : obstacles.','Change de file pour les éviter !','Risque de chute : descente 50 à 90 %,','plat 10 %, montée 5 %, + si fatigué.','Une chute coûte environ 1 seconde.']},
+{t:'TA PROGRESSION',l:['Barre du haut : ton avancée.','Top 8 : des points, à répartir','en Grimpeur, Puncheur, Rouleur.','15 courses par saison, puis les','championnats et leurs maillots.','Fin de saison : les 3 premiers','montent, les 3 derniers','descendent. Vise la WorldTeam !']}];
+function toTuto(){st='tuto';tp=0;selT=performance.now()}
+function tnext(){if(tp<TP.length-1)tp++;else go()}
+function tprev(){if(tp>0)tp--}
+function tico(p){const R=(x,y,w,h,c)=>{g.fillStyle=c;g.fillRect(x,y,w,h)},tri=(cx,y,up,c)=>{for(let i=0;i<4;i++)R(cx-i-.0,up?y+i*2:y+(3-i)*2,i*2+1,2,c)};
+ if(p==0){tri(48,40,1,'#2ef2ff');bike(48,84,'#6fe8d8',0,1);tri(48,100,0,'#2ef2ff');R(24,126,46,10,'#e04040');T6('ATTAQUE',27,134,'#fff')}
+ else if(p==1){[[100,'#ffd23e'],[55,'#ffd23e'],[8,'#ff3e3e']].forEach((q,i)=>{const y=52+i*28;R(22,y,50,8,'#e04020');R(23,y+1,48,6,'#120826');R(23,y+1,48*q[0]/100,6,q[1])})}
+ else if(p==2){bike(56,66,'#ff8a3e',2,0);bike(32,66,'#6fe8d8',2,1);veh(32,{y:108,car:0});veh(54,{y:136,car:1});T6('2/12',44,50,'#ffd23e')}
+ else if(p==3){R(44,48,3,7,'#ffd23e');R(44,47,3,1,'#e04040');R(30,86,26,3,'#4aa8ff');R(32,86,8,1,'#bfe6ff');for(let i=0;i<9;i++)R(30+i*3,102+(i%3),2,1,'#c9c4d6');R(30,118,28,3,'#d9b26a')}
+ else{[['WORLDTEAM','#ffd23e'],['PROTEAM','#ffb300'],['CONTINENT.','#2ef2ff'],['NATIONALE','#4a8cff'],['REGIONALE','#8a5a3a']].forEach((q,i)=>{const y=40+i*17;R(20,y,86,14,q[1]);T6(q[0],24,y+10,'#120826')});tri(111,40,1,'#9bff4d');tri(111,110,0,'#e04040')}}
+function dtuto(){scene();g.fillStyle='#0b1a4af2';g.fillRect(12,10,296,160);g.strokeStyle='#ffd23e';g.strokeRect(12.5,10.5,295,159);
+ T(TP[tp].t,W/2,26,'#ffd23e','center');T6((tp+1)+'/'+TP.length,296,26,'#cfe4ff');
+ TP[tp].l.forEach((s,i)=>T6(s,tp==4?118:74,tp==4?46+i*11:48+i*11,'#fff'));tico(tp);
+ g.fillStyle='#162a6a';if(tp>0)g.fillRect(24,148,70,14);g.fillStyle='#e04040';g.fillRect(226,148,70,14);
+ if(tp>0)T('PRECEDENT',29,159,'#fff');T(tp==TP.length-1?'JOUER !':'SUIVANT',261,159,'#fff','center');
+ T6('PASSER',24,26,'#cfe4ff');for(let i=0;i<TP.length;i++){g.fillStyle=i==tp?'#ffd23e':'#4a5fa8';g.fillRect(140+i*8,152,5,5)}}
+C.addEventListener('pointerdown',e=>{if(st!='tuto'||e.timeStamp-selT<300)return;const[x,y]=px(e);if(y>=148&&y<164){if(x>=24&&x<94)tprev();else if(x>=226&&x<296)tnext()}else if(y<32&&x<80)go()});
+addEventListener('keydown',e=>{if(st!='tuto')return;if(e.code=='ArrowRight')tnext();if(e.code=='ArrowLeft')tprev();if(e.code=='Escape')go()});
 let last=0;initWorld();initSeason();reset();
 function loop(ts){const d=Math.min(.05,(ts-last)/1000||0);last=ts;t+=d;
  if(st=='count'){cd-=d;if(cd<=0){st='race';say(clm?'Contre-la-montre : pas d’aspiration':'Partez !');talk(clm?'Contre la montre, le premier coureur est lancé !':'Le peloton est lancé !')}}
